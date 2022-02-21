@@ -212,7 +212,6 @@ public class CommandListener {
     @Command(name = "print_descending", args = "", description = "Вывести элементы коллекции в порядке убывания")
     private void printDescending() {
         List<HumanBeing> arrayToPrint = humanCollection.returnDescending();
-        Collections.reverse(arrayToPrint);
         for (HumanBeing human : arrayToPrint) {
             System.out.println(human.toString());
         }

@@ -206,7 +206,7 @@ public class HumanBeing implements Comparable<HumanBeing> {
      * @param impactSpeed скорость удара в строковом формате
      */
     public void setImpactSpeed(String impactSpeed) {
-        if ("".equals(impactSpeed)) {
+        if ("".equals(impactSpeed) || "null".equals(impactSpeed)) {
             this.impactSpeed = null;
         } else {
             int newImpactSpeed = Integer.parseInt(impactSpeed);
@@ -230,7 +230,7 @@ public class HumanBeing implements Comparable<HumanBeing> {
      */
     public void setWeaponType(String weaponType) {
         String newWeaponType = weaponType.toUpperCase();
-        if ("".equals(newWeaponType)) {
+        if ("".equals(newWeaponType) || "NULL".equals(newWeaponType)) {
             this.weaponType = null;
         } else {
             this.weaponType = WeaponType.valueOf(newWeaponType);
@@ -250,7 +250,7 @@ public class HumanBeing implements Comparable<HumanBeing> {
      */
     public void setMood(String mood) {
         String newMood = mood.toUpperCase();
-        if ("".equals(newMood)) {
+        if ("".equals(newMood) || "NULL".equals(newMood)) {
             this.mood = null;
         } else {
             this.mood = Mood.valueOf(newMood);
@@ -287,6 +287,6 @@ public class HumanBeing implements Comparable<HumanBeing> {
                 + coordinates.getX() + ", Y: " + coordinates.getY()
                 + ", CREATION DATE: " + creationDate + ", REAL HERO: " + realHero
                 + ", HAS TOOTHPICK: " + hasToothpick + ", IMPACT SPEED: " + impactSpeed
-                + ", WEAPON TYPE: " + weaponType + " MOOD: " + mood + ", CAR INFO: " + (car == null ? "no car" : car.toString());
+                + ", WEAPON TYPE: " + weaponType + ", MOOD: " + mood + ", CAR INFO: " + (car == null ? "no car" : car.toString());
     }
 }

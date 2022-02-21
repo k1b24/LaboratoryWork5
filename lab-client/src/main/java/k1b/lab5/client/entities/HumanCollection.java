@@ -4,6 +4,7 @@ import k1b.lab5.client.entities.enums.Mood;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.PriorityQueue;
 
 /**
@@ -127,11 +128,8 @@ public class HumanCollection {
      * @return массив людей коллекции, расположенных в порядке убывания
      */
     public ArrayList<HumanBeing> returnDescending() {
-        PriorityQueue<HumanBeing> queueToFilter = humanQueue;
-        ArrayList<HumanBeing> descendingList = new ArrayList<>();
-        while (!queueToFilter.isEmpty()) {
-            descendingList.add(queueToFilter.poll());
-        }
+        ArrayList<HumanBeing> descendingList = new ArrayList<>(humanQueue);
+        Collections.reverse(descendingList);
         return descendingList;
     }
 
@@ -186,9 +184,9 @@ public class HumanCollection {
             String humanInfo = human.getName() + "," + human.getCoordinates().getX() + ","
                     + human.getCoordinates().getY() + "," + human.getCreationDate().toString() + ","
                     + human.isRealHero() + "," + human.isHasToothpick() + ","
-                    + (human.getImpactSpeed() == null ? "," : human.getImpactSpeed() + ",")
-                    + (human.getWeaponType() == null ? "," : human.getWeaponType() + ",")
-                    + (human.getMood() == null ? "," : human.getMood() + ",")  + (human.getCar() == null ? "," : human.getCar().getCool() + "," + human.getCar().getSpeed());
+                    + (human.getImpactSpeed() == null ? "null," : human.getImpactSpeed() + ",")
+                    + (human.getWeaponType() == null ? "null," : human.getWeaponType() + ",")
+                    + (human.getMood() == null ? "null," : human.getMood() + ",")  + (human.getCar() == null ? "," : (human.getCar().getCool() == null ? "null," : human.getCar().getCool()) + "," + human.getCar().getSpeed());
             arrayOfInfo.add(humanInfo);
         }
         return arrayOfInfo;

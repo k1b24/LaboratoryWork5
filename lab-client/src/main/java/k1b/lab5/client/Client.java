@@ -21,6 +21,7 @@ public final class Client {
         }
         reader.parseFile();
         humanCollection.fillWithArray(reader.getInfoFromFile());
+
         CommandListener commandListener = new CommandListener(humanCollection);
         commandListener.readCommandsFromSystemIn();
     }

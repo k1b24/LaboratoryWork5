@@ -1,4 +1,0 @@
-name,x,y,creationDate,realHero,hasToothpick,impactSpeed,weaponType,mood,carCoolness,carSpeed
-Ivanov Andrew,12,-2.13120307E9,2022-02-21,true,false,123,MACHINE_GUN,CALM,null,120
-nikita,12,12.0,2022-02-21,false,true,12,AXE,,false,120
-dima,12,12.0,2022-02-21,true,false,123,AXE,,false,12
