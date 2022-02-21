@@ -42,8 +42,9 @@ public class Car {
      * @param newCool
      */
     public void setCarCoolness(String newCool) {
-        if ("".equals(newCool)) {
+        if ("".equals(newCool) || "null".equals(newCool)) {
             this.cool = null;
+            return;
         }
         if (!"false".equalsIgnoreCase(newCool) && !"true".equalsIgnoreCase(newCool)) {
             throw new IllegalArgumentException("Передано неправильное значение, машина крутая или нет?");
