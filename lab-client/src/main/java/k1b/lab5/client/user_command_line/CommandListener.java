@@ -8,13 +8,7 @@ import k1b.lab5.client.entities.enums.Mood;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Arrays;
-import java.util.Scanner;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 /**
  * Класс отвечающий за работу с пользователем в интерактивном режиме
@@ -309,11 +303,15 @@ public class CommandListener {
     public void readCommandsFromSystemIn() {
         Scanner scanner = new Scanner(System.in);
         while (true) {
-            String line = scanner.nextLine();
-            if ("exit".equals(line)) {
+            try {
+                String line = scanner.nextLine();
+                if ("exit".equals(line)) {
+                    break;
+                }
+                runCommand(line);
+            } catch (NoSuchElementException e) {
                 break;
             }
-            runCommand(line);
         }
     }
 }

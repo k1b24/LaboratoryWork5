@@ -1,5 +1,6 @@
 /target/
 /lab-client/target/
+/lab-client/javadoc/
 /lab-common/target/
 /lab-server/target/
 *.iml
