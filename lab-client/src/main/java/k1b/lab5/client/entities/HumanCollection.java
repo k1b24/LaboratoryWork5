@@ -64,7 +64,12 @@ public class HumanCollection {
      * @param mood значение настроения
      */
     public void removeHumanByAnyMood(Mood mood) {
-        humanQueue.removeIf(human -> human.getMood() == mood);
+        for (HumanBeing human : humanQueue) {
+            if (human.getMood() == mood) {
+                humanQueue.remove(human);
+                break;
+            }
+        }
     }
 
     /**
@@ -153,7 +158,7 @@ public class HumanCollection {
      */
     public void addIfMin(HumanBeing newHuman) {
         for (HumanBeing human : humanQueue) {
-            if (newHuman.compareTo(human) < 0) {
+            if (newHuman.compareTo(human) > 0) {
                 return;
             }
         }

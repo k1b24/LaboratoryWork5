@@ -146,12 +146,11 @@ public class CommandListener {
         int id;
         try {
             id = Integer.parseInt(idToRemove);
+            humanCollection.removeHumanById(id);
+            System.out.println("Человек с ID " + id + " успешно удален");
         } catch (NumberFormatException e) {
             System.out.println("Ошибка ввода, введите число");
-            return;
         }
-        humanCollection.removeHumanById(id);
-        System.out.println("Человек с ID " + id + " успешно удален");
     }
 
     /**
@@ -169,7 +168,12 @@ public class CommandListener {
     @Command(name = "remove_by_any_mood", args = "[mood]", description = "Удалить из коллекции один элемент, значение поля mood которого эквивалентно заданному", amountOfArgs = 1)
     private void removeByAnyMood(String mood) {
         try {
-            Mood moodToRemove = Mood.valueOf(mood.toUpperCase());
+            Mood moodToRemove;
+            if ("".equals(mood)) {
+                moodToRemove = null;
+            } else {
+                moodToRemove = Mood.valueOf(mood.toUpperCase());
+            }
             humanCollection.removeHumanByAnyMood(moodToRemove);
         } catch (Exception e) {
             System.out.println("Такого настроения не существует, введите одно из:");
@@ -216,10 +220,14 @@ public class CommandListener {
      */
     @Command(name = "filter_less_than_car", args = "[speed]", description = "Вывести элементы, значение скорости которых меньше заданного", amountOfArgs = 1)
     private void filterLessThanCar(String speed) {
-        int speedFilter = Integer.parseInt(speed);
-        ArrayList<HumanBeing> humans = humanCollection.filterByCarSpeed(speedFilter);
-        for (HumanBeing human : humans) {
-            System.out.println(human.toString());
+        try {
+            int speedFilter = Integer.parseInt(speed);
+            ArrayList<HumanBeing> humans = humanCollection.filterByCarSpeed(speedFilter);
+            for (HumanBeing human : humans) {
+                System.out.println(human.toString());
+            }
+        } catch (NumberFormatException e) {
+            System.out.println("Ошибка ввода, введите число");
         }
     }
 

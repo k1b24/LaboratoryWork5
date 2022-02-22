@@ -50,6 +50,7 @@ public class HumanInfoInput {
         this.hasToothpick = hasToothpick;
         this.impactSpeed = impactSpeed;
         newHumanToInput = new HumanBeing(false);
+        newHumanToInput.setId();
         setPrimitives();
 
     }
@@ -235,7 +236,6 @@ public class HumanInfoInput {
         inputWeaponType();
         inputMood();
         inputCar();
-        newHumanToInput.setId();
     }
 
     /**
