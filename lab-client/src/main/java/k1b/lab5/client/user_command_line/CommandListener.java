@@ -250,7 +250,7 @@ public class CommandListener {
     /**
      * Консольная команда execute_script, исполняющая скрипт из указанного файла
      */
-    @Command(name = "execute_script", args = "[file_name]", description = "считать и исполнить скрипт из указанного файла. В скрипте содержатся команды в таком же виде, в котором их вводит пользователь в интерактивном режиме.", amountOfArgs = 1)
+    @Command(name = "execute_script", args = "[file_name]", description = "Cчитать и исполнить скрипт из указанного файла. В скрипте содержатся команды в таком же виде, в котором их вводит пользователь в интерактивном режиме.", amountOfArgs = 1)
     private void executeScript(String fileName) {
         ExecutableFileReader fileReader = new ExecutableFileReader();
         try {
@@ -263,8 +263,8 @@ public class CommandListener {
         ArrayList<String> commands = fileReader.getInfoFromFile();
         for (String command : commands) {
             System.out.println();
-            if (command.contains("execute_script") && command.contains(fileName)) {
-                System.out.println("Команда: " + command + "пропущена, так как она вызывает скрипт, в котором она содержится");
+            if (command.contains("execute_script")) {
+                System.out.println("Команда: " + command + " пропущена, так как она вызывает скрипт, в котором она содержится");
                 continue;
             }
             runCommand(command);

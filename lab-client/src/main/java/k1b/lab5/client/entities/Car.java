@@ -8,18 +8,18 @@ public class Car {
     /**
      * Поле отвечающее за крутость машины, может принимать значение null
      */
-    private Boolean cool; //Поле может быть null
+    private Boolean carCoolness; //Поле может быть null
 
     /**
      * Поле, хранящее в себе скорость машины
      */
-    private int speed;
+    private int carSpeed;
 
     /**
      * @return Скорость машины
      */
-    public int getSpeed() {
-        return speed;
+    public int getCarSpeed() {
+        return carSpeed;
     }
 
     /**
@@ -27,14 +27,14 @@ public class Car {
      * @param newSpeed новая скорость в строковом формате
      */
     public void setCarSpeed(String newSpeed) {
-        this.speed = Integer.parseInt(newSpeed);
+        this.carSpeed = Integer.parseInt(newSpeed);
     }
 
     /**
      * @return Крутость машины
      */
-    public Boolean getCool() {
-        return cool;
+    public Boolean getCarCoolness() {
+        return carCoolness;
     }
 
     /**
@@ -43,17 +43,17 @@ public class Car {
      */
     public void setCarCoolness(String newCool) {
         if ("".equals(newCool) || "null".equals(newCool)) {
-            this.cool = null;
+            this.carCoolness = null;
             return;
         }
         if (!"false".equalsIgnoreCase(newCool) && !"true".equalsIgnoreCase(newCool)) {
             throw new IllegalArgumentException("Передано неправильное значение, машина крутая или нет?");
         }
-        this.cool = "true".equalsIgnoreCase(newCool);
+        this.carCoolness = "true".equalsIgnoreCase(newCool);
     }
 
     @Override
     public String toString() {
-        return "CAR COOLNESS: " + this.getCool() + " CAR SPEED: " + this.getSpeed();
+        return "CAR COOLNESS: " + this.getCarCoolness() + " CAR SPEED: " + this.getCarSpeed();
     }
 }

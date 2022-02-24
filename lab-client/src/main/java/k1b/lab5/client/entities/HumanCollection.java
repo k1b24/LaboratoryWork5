@@ -145,7 +145,7 @@ public class HumanCollection {
     public ArrayList<HumanBeing> filterByCarSpeed(int speed) {
         ArrayList<HumanBeing> filtered = new ArrayList<>();
         for (HumanBeing human : humanQueue) {
-            if (human.getCar() != null && human.getCar().getSpeed() < speed) {
+            if (human.getCar() != null && human.getCar().getCarSpeed() < speed) {
                 filtered.add(human);
             }
         }
@@ -191,7 +191,7 @@ public class HumanCollection {
                     + human.isRealHero() + "," + human.isHasToothpick() + ","
                     + (human.getImpactSpeed() == null ? "null," : human.getImpactSpeed() + ",")
                     + (human.getWeaponType() == null ? "null," : human.getWeaponType() + ",")
-                    + (human.getMood() == null ? "null," : human.getMood() + ",")  + (human.getCar() == null ? "," : (human.getCar().getCool() == null ? "null," : human.getCar().getCool()) + "," + human.getCar().getSpeed());
+                    + (human.getMood() == null ? "null," : human.getMood() + ",")  + (human.getCar() == null ? "," : (human.getCar().getCarCoolness() == null ? "null," : human.getCar().getCarCoolness()) + "," + human.getCar().getCarSpeed());
             arrayOfInfo.add(humanInfo);
         }
         return arrayOfInfo;
