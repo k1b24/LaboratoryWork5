@@ -82,7 +82,9 @@ public class CSVReader extends AbstractFileReader {
                 Class<?> cl = field.getType();
                 if (field.getName().equals(element.getKey())) {
                     try {
-                        Method setter = HumanBeing.class.getDeclaredMethod("set" + field.getName().substring(0, 1).toUpperCase() + field.getName().substring(1), String.class);
+                        Method setter = HumanBeing.class.getDeclaredMethod("set"
+                                + field.getName().substring(0, 1).toUpperCase()
+                                + field.getName().substring(1), String.class);
                         setter.invoke(newHuman, element.getValue());
                     } catch (Exception e) {
                         System.out.println("Ошибка при чтении файла");
@@ -92,15 +94,25 @@ public class CSVReader extends AbstractFileReader {
                     Field[] innerFields = cl.getDeclaredFields();
                     for (Field innerField : innerFields) {
                         if (innerField.getName().equals(element.getKey())) {
+                            //todo сделать проверку на пустоту
                             try {
-
-                                Method innerSetter = cl.getDeclaredMethod("set" + innerField.getName().substring(0, 1).toUpperCase() + innerField.getName().substring(1), String.class);
-                                Method getter = HumanBeing.class.getDeclaredMethod("get" + cl.getSimpleName().substring(0,1).toUpperCase() + cl.getSimpleName().substring(1));
-                                System.out.println(getter.getName());
-                                innerSetter.invoke(getter.invoke(newHuman), element.getValue());
+                                Method innerSetter = cl.getDeclaredMethod("set"
+                                        + innerField.getName().substring(0, 1).toUpperCase()
+                                        + innerField.getName().substring(1), String.class);
+                                Method getter = HumanBeing.class.getDeclaredMethod("get"
+                                        + cl.getSimpleName().substring(0, 1).toUpperCase()
+                                        + cl.getSimpleName().substring(1));
+                                Method outerSetter = HumanBeing.class.getDeclaredMethod("set"
+                                        + cl.getSimpleName().substring(0, 1).toUpperCase()
+                                        + cl.getSimpleName().substring(1), cl);
+                                if ("".equals(element.getValue())) {
+                                    outerSetter.invoke(newHuman, (Object) null);
+                                } else if (getter.invoke(newHuman) != null) {
+                                    innerSetter.invoke(getter.invoke(newHuman), element.getValue());
+                                }
                             } catch (Exception e) {
-                                e.printStackTrace();
                                 System.out.println("Ошибка при чтении файла");
+                                System.out.println(e.getCause().getMessage());
                                 System.exit(2);
                             }
                         }

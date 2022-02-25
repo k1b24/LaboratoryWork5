@@ -146,8 +146,12 @@ public class CommandListener {
         int id;
         try {
             id = Integer.parseInt(idToRemove);
-            humanCollection.removeHumanById(id);
-            System.out.println("Человек с ID " + id + " успешно удален");
+            if (id <= humanCollection.getLength() && id > 0) {
+                humanCollection.removeHumanById(id);
+                System.out.println("Человек с ID " + id + " успешно удален");
+            } else {
+                System.out.println("Человек с таким ID не найден");
+            }
         } catch (NumberFormatException e) {
             System.out.println("Ошибка ввода, введите число");
         }

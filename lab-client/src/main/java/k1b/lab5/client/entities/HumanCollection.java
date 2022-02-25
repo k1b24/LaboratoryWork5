@@ -139,6 +139,13 @@ public class HumanCollection {
     }
 
     /**
+     * @return Возвращает длину коллекции
+     */
+    public int getLength() {
+        return humanQueue.size();
+    }
+
+    /**
      * @param speed скорость машины
      * @return все элементы коллекции, скорость которых меньше заданной
      */
