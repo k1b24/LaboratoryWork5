@@ -94,7 +94,6 @@ public class CSVReader extends AbstractFileReader {
                     Field[] innerFields = cl.getDeclaredFields();
                     for (Field innerField : innerFields) {
                         if (innerField.getName().equals(element.getKey())) {
-                            //todo сделать проверку на пустоту
                             try {
                                 Method innerSetter = cl.getDeclaredMethod("set"
                                         + innerField.getName().substring(0, 1).toUpperCase()

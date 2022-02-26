@@ -37,6 +37,18 @@ public class HumanCollection {
     }
 
     /**
+     * @return список элементов коллекции в порядке очереди
+     */
+    private ArrayList<HumanBeing> getSortedArrayListFromQueue () {
+        PriorityQueue<HumanBeing> bufferQueue = new PriorityQueue<>(humanQueue);
+        ArrayList<HumanBeing> sortedArrayList = new ArrayList<>();
+        while (!bufferQueue.isEmpty()){
+            sortedArrayList.add(bufferQueue.poll());
+        }
+        return sortedArrayList;
+    }
+
+    /**
      * @return имя файла с данными о коллекции
      */
     public String getFileName() {
@@ -107,7 +119,8 @@ public class HumanCollection {
      * Метод выводящий информацию о коллекции
      */
     public void show() {
-        for (HumanBeing human : humanQueue) {
+        ArrayList<HumanBeing> arrayToShow = getSortedArrayListFromQueue();
+        for (HumanBeing human : arrayToShow) {
             System.out.println(human);
         }
     }
@@ -133,7 +146,7 @@ public class HumanCollection {
      * @return массив людей коллекции, расположенных в порядке убывания
      */
     public ArrayList<HumanBeing> returnDescending() {
-        ArrayList<HumanBeing> descendingList = new ArrayList<>(humanQueue);
+        ArrayList<HumanBeing> descendingList = getSortedArrayListFromQueue();
         Collections.reverse(descendingList);
         return descendingList;
     }

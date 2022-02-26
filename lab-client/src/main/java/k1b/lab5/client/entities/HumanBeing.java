@@ -274,9 +274,9 @@ public class HumanBeing implements Comparable<HumanBeing> {
 
     @Override
     public int compareTo(HumanBeing o) {
-        int result = this.name.compareTo(o.name);
+        int result = this.getName().compareTo(o.getName());
         if (result == 0) {
-            result = this.impactSpeed.compareTo(o.impactSpeed);
+            result = this.getImpactSpeed().compareTo(o.getImpactSpeed());
         }
         return result;
     }
