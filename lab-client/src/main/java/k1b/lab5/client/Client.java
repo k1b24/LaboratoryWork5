@@ -16,12 +16,15 @@ public final class Client {
         CSVReader reader = new CSVReader();
         try {
             reader.initializeFile(humanCollection.getFileName());
+            reader.parseFile();
+            humanCollection.fillWithArray(reader.getInfoFromFile());
+            CommandListener commandListener = new CommandListener(humanCollection);
+            commandListener.readCommandsFromSystemIn();
         } catch (FileNotFoundException e) {
             System.out.println("Файл: " + humanCollection.getFileName() + " не найден");
+        } catch (NullPointerException e) {
+            System.out.println("Пожалуйста проинциализируйте системную переменную HUMAN_INFO, " +
+                    "содержащую путь до файла с информацией о коллекции");
         }
-        reader.parseFile();
-        humanCollection.fillWithArray(reader.getInfoFromFile());
-        CommandListener commandListener = new CommandListener(humanCollection);
-        commandListener.readCommandsFromSystemIn();
     }
 }

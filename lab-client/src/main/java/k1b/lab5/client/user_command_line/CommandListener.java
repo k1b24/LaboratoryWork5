@@ -63,6 +63,8 @@ public class CommandListener {
             }
         }
         saver = new CSVSaver(humanCollection.getFileName());
+        System.out.println("Добро пожаловать в интерактивный режим работы с коллекцией, " +
+                "введите help, чтобы узнать информацию о доступных командах");
     }
 
     /**
