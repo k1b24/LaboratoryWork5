@@ -12,14 +12,7 @@ import java.util.Scanner;
  */
 public class ExecutableFileReader extends AbstractFileReader {
 
-    /**
-     * Поле, хранящее в себе scanner файла
-     */
     private Scanner scannerOfFile;
-
-    /**
-     * Поле, хранящее в себе все команды, прочитанные из файла
-     */
     private final ArrayList<String> commands = new ArrayList<>();
 
     /**

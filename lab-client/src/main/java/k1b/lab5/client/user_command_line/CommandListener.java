@@ -2,9 +2,11 @@ package k1b.lab5.client.user_command_line;
 
 import k1b.lab5.client.annotations.Command;
 import k1b.lab5.client.csv_parser.CSVSaver;
-import k1b.lab5.client.entities.HumanCollection;
+import k1b.lab5.client.entities.CollectionManager;
 import k1b.lab5.client.entities.HumanBeing;
 import k1b.lab5.client.entities.enums.Mood;
+import k1b.lab5.client.utils.SmartSplitter;
+import k1b.lab5.client.utils.TextSender;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
@@ -15,46 +17,19 @@ import java.util.*;
  */
 public class CommandListener {
 
-    /**
-     * final количество аргументов для команды add
-     */
     private static final int AMOUNT_OF_ARGS_FOR_ADD = 4;
-
-    /**
-     * final количество аргументов для команды update
-     */
     private static final int AMOUNT_OF_ARGS_FOR_UPDATE = 5;
-
-    /**
-     * final количество команд введенных пользователем, которые сохраняются в памяти для команды history
-     */
     private static final int AMOUNT_OF_COMMANDS_TO_SAVE = 10;
-
-    /**
-     * final количество методов с аннотацией Command
-     */
     private static final Map<String, Method> COMMANDS = new HashMap<>();
-
-    /**
-     * final ссылка на коллекцию с которой работает пользователь
-     */
-    private final HumanCollection humanCollection;
-
-    /**
-     * final объект класса CSVSaver, который сохраняет информацию о коллекции в файл
-     */
+    private final CollectionManager humanCollection;
     private final CSVSaver saver;
-
-    /**
-     * Массив для хранения последних команд, которые ввел пользователь
-     */
     private ArrayList<String> lastCommands = new ArrayList<>();
 
     /**
      * Конструктор, принимающий на вход ссылку на коллекцию, с которой будет работать пользователь
      * @param humanCollection коллекция, с которой будет работать пользователь
      */
-    public CommandListener(HumanCollection humanCollection) {
+    public CommandListener(CollectionManager humanCollection) {
         this.humanCollection = humanCollection;
         for (Method method : CommandListener.class.getDeclaredMethods()) {
             if (method.isAnnotationPresent(Command.class)) {
@@ -63,7 +38,7 @@ public class CommandListener {
             }
         }
         saver = new CSVSaver(humanCollection.getFileName());
-        System.out.println("Добро пожаловать в интерактивный режим работы с коллекцией, " +
+        TextSender.printMessage("Добро пожаловать в интерактивный режим работы с коллекцией, " +
                 "введите help, чтобы узнать информацию о доступных командах");
     }
 
@@ -72,13 +47,13 @@ public class CommandListener {
      */
     @Command(name = "help", args = "", description = "Вывести справку по доступным командам")
     private void help() {
-        System.out.println("Доступные команды: ");
+        TextSender.printMessage("Доступные команды: ");
         for (Map.Entry<String, Method> method : COMMANDS.entrySet()) {
             Command command = method.getValue().getAnnotation(Command.class);
             String name = command.name();
             String args = command.args();
             String description = command.description();
-            System.out.println(name + " " + args + ": " + description);
+            TextSender.printMessage(name + " " + args + ": " + description);
         }
     }
 
@@ -87,7 +62,7 @@ public class CommandListener {
      */
     @Command(name = "info", args = "", description = "Вывести информацию о коллекции")
     private void info() {
-        System.out.println(humanCollection.getInfoAboutCollection());
+        TextSender.printMessage(humanCollection.getInfoAboutCollection());
     }
 
     /**
@@ -107,10 +82,8 @@ public class CommandListener {
             HumanInfoInput humanInfoInput = new HumanInfoInput(name, realHero, hasToothpick, impactSpeed);
             humanInfoInput.inputHuman();
             humanCollection.addHuman(humanInfoInput.getNewHumanToInput());
-        } catch (NumberFormatException e) {
-            System.out.println("Ошибка ввода числового значения");
         } catch (IllegalArgumentException e) {
-            System.out.println(e.getMessage());
+            TextSender.printError(e.getMessage());
         }
     }
 
@@ -125,9 +98,9 @@ public class CommandListener {
             humanInfoInput.inputHuman();
             humanCollection.setHumanById(id, humanInfoInput.getNewHumanToInput());
         } catch (NumberFormatException e) {
-            System.out.println("Передано неверное значение id");
+            TextSender.printError("Передано неверное значение id");
         } catch (IllegalArgumentException e) {
-            System.out.println(e.getMessage());
+            TextSender.printError(e.getMessage());
         }
     }
 
@@ -137,7 +110,7 @@ public class CommandListener {
     @Command(name = "save", args = "", description = "Сохранить информацию о коллекции в файл")
     private void save() throws IOException {
         saver.saveToFile(humanCollection.getArrayOfInfo());
-        System.out.println("Файл сохранен");
+        TextSender.printMessage("Файл сохранен");
     }
 
     /**
@@ -150,12 +123,12 @@ public class CommandListener {
             id = Integer.parseInt(idToRemove);
             if (id <= humanCollection.getLength() && id > 0) {
                 humanCollection.removeHumanById(id);
-                System.out.println("Человек с ID " + id + " успешно удален");
+                TextSender.printMessage("Человек с ID " + id + " успешно удален");
             } else {
-                System.out.println("Человек с таким ID не найден");
+                TextSender.printError("Человек с таким ID не найден");
             }
         } catch (NumberFormatException e) {
-            System.out.println("Ошибка ввода, введите число");
+            TextSender.printError("Ошибка ввода, введите число");
         }
     }
 
@@ -165,7 +138,7 @@ public class CommandListener {
     @Command(name = "clear", args = "", description = "Очистить коллекцию")
     private void clearCollection() {
         humanCollection.clearCollection();
-        System.out.println("Коллекция очищена");
+        TextSender.printMessage("Коллекция очищена");
     }
 
     /**
@@ -182,8 +155,8 @@ public class CommandListener {
             }
             humanCollection.removeHumanByAnyMood(moodToRemove);
         } catch (Exception e) {
-            System.out.println("Такого настроения не существует, введите одно из:");
-            System.out.println(Arrays.toString(Mood.values()));
+            TextSender.printError("Такого настроения не существует, введите одно из:");
+            TextSender.printMessage(Arrays.toString(Mood.values()));
         }
     }
 
@@ -194,9 +167,9 @@ public class CommandListener {
     private void head() {
         HumanBeing head = humanCollection.returnHead();
         if (head != null) {
-            System.out.println(head);
+            TextSender.printMessage(head.toString());
         } else {
-            System.out.println("Коллекция пустая :(");
+            TextSender.printError("Коллекция пустая :(");
         }
     }
 
@@ -206,7 +179,7 @@ public class CommandListener {
     @Command(name = "history", args = "", description = "Вывести последние 10 команд, введенных пользователем")
     private void history() {
         for (int i = lastCommands.size() - 1; i >= 0; i--) {
-            System.out.println(i + 1 + ". " + lastCommands.get(i));
+            TextSender.printMessage(i + 1 + ". " + lastCommands.get(i));
         }
     }
 
@@ -217,7 +190,7 @@ public class CommandListener {
     private void printDescending() {
         List<HumanBeing> arrayToPrint = humanCollection.returnDescending();
         for (HumanBeing human : arrayToPrint) {
-            System.out.println(human.toString());
+            TextSender.printMessage(human.toString());
         }
     }
 
@@ -230,10 +203,10 @@ public class CommandListener {
             int speedFilter = Integer.parseInt(speed);
             ArrayList<HumanBeing> humans = humanCollection.filterByCarSpeed(speedFilter);
             for (HumanBeing human : humans) {
-                System.out.println(human.toString());
+                TextSender.printMessage(human.toString());
             }
         } catch (NumberFormatException e) {
-            System.out.println("Ошибка ввода, введите число");
+            TextSender.printError("Ошибка ввода, введите число");
         }
     }
 
@@ -247,9 +220,9 @@ public class CommandListener {
             humanInfoInput.inputHuman();
             humanCollection.addIfMin(humanInfoInput.getNewHumanToInput());
         } catch (NumberFormatException e) {
-            System.out.println("Ошибка ввода числового значения");
+            TextSender.printError("Ошибка ввода числового значения");
         } catch (IllegalArgumentException e) {
-            System.out.println(e.getMessage());
+            TextSender.printError(e.getMessage());
         }
     }
 
@@ -262,33 +235,28 @@ public class CommandListener {
         try {
             fileReader.initializeFile(fileName);
         } catch (IOException e) {
-            System.out.println(e.getMessage());
+            TextSender.printError(e.getMessage());
             return;
         }
         fileReader.parseFile();
         ArrayList<String> commands = fileReader.getInfoFromFile();
         for (String command : commands) {
-            System.out.println();
+            TextSender.printMessage("");
             if (command.contains("execute_script")) {
-                System.out.println("Команда: " + command + " пропущена, так как она вызывает скрипт, в котором она содержится");
+                TextSender.printError("Команда: " + command + " пропущена, так как она вызывает скрипт");
                 continue;
             }
             runCommand(command);
         }
     }
 
-    /**
-     * Метод, вызывающий метод консольный команды, имя аннотации которой совпадает с именем, введенной пользователем команды
-     * @param commandName имя команды
-     * @param commandArgs аргументы команды
-     */
     private void invokeMethod(String commandName, String[] commandArgs)  {
         try {
             Method method = COMMANDS.get(commandName);
             lastCommands.add(commandName);
             Command command = method.getAnnotation(Command.class);
             if (commandArgs.length != command.amountOfArgs()) {
-                System.out.println("Неверное количество аргументов команды " + commandName + ". Необходимо: " + command.amountOfArgs());
+                TextSender.printError("Неверное количество аргументов команды " + commandName + ". Необходимо: " + command.amountOfArgs());
             } else {
                 method.invoke(this, commandArgs);
             }
@@ -296,14 +264,10 @@ public class CommandListener {
                 lastCommands = new ArrayList<>(lastCommands.subList(1, AMOUNT_OF_COMMANDS_TO_SAVE));
             }
         } catch (Exception e) {
-            System.out.println("Ошибка ввода! Команды " + commandName + " не существует, введите команду help, для вывода списка доступных команд");
+            TextSender.printError("Ошибка ввода! Команды " + commandName + " не существует, введите команду help, для вывода списка доступных команд");
         }
     }
 
-    /**
-     * Метод, разбивающий команду введенную пользователем на имя и аргументы с помощью SmartSplitter.smartSplit
-     * @param command команда, введенная пользователем
-     */
     private void runCommand(String command) {
         String[] inputString = SmartSplitter.smartSplit(command).toArray(new String[0]);
         String commandName = inputString[0].toLowerCase();

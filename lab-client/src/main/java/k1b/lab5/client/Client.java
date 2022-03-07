@@ -1,8 +1,9 @@
 package k1b.lab5.client;
 
 import k1b.lab5.client.csv_parser.CSVReader;
-import k1b.lab5.client.entities.HumanCollection;
+import k1b.lab5.client.entities.CollectionManager;
 import k1b.lab5.client.user_command_line.CommandListener;
+import k1b.lab5.client.utils.TextSender;
 
 import java.io.FileNotFoundException;
 
@@ -12,7 +13,7 @@ public final class Client {
     }
 
     public static void main(String[] args) {
-        HumanCollection humanCollection = new HumanCollection("HUMAN_INFO");
+        CollectionManager humanCollection = new CollectionManager("HUMAN_INFO");
         CSVReader reader = new CSVReader();
         try {
             reader.initializeFile(humanCollection.getFileName());
@@ -21,9 +22,9 @@ public final class Client {
             CommandListener commandListener = new CommandListener(humanCollection);
             commandListener.readCommandsFromSystemIn();
         } catch (FileNotFoundException e) {
-            System.out.println("Файл: " + humanCollection.getFileName() + " не найден");
+            TextSender.printError("Файл: " + humanCollection.getFileName() + " не найден");
         } catch (NullPointerException e) {
-            System.out.println("Пожалуйста проинциализируйте системную переменную HUMAN_INFO, " +
+            TextSender.printError("Пожалуйста проинциализируйте системную переменную HUMAN_INFO, " +
                     "содержащую путь до файла с информацией о коллекции");
         }
     }

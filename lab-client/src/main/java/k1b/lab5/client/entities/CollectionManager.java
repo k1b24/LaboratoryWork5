@@ -1,44 +1,32 @@
 package k1b.lab5.client.entities;
 
 import k1b.lab5.client.entities.enums.Mood;
+import k1b.lab5.client.utils.TextSender;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.PriorityQueue;
 
 /**
  * Класс для работы с коллекцией экземпляров HumanBeing
  */
-public class HumanCollection {
+public class CollectionManager {
 
-    /**
-     * Коллекция экземпляров HumanBeing
-     */
     private final PriorityQueue<HumanBeing> humanQueue = new PriorityQueue<>();
-
-    /**
-     * Дата инициализации коллекции
-     */
     private final LocalDate initializationDate;
-
-    /**
-     * Имя файла в котором хранятся данные о коллекции
-     */
     private final String fileName;
 
     /**
      * Конструктор, задаюший дату инициализации коллекции и поле fileName
      * @param fileName имя файла, в котором хранятся данные о коллекции
      */
-    public HumanCollection(String fileName) {
+    public CollectionManager(String fileName) {
         this.fileName = fileName;
         initializationDate = LocalDate.now();
     }
 
-    /**
-     * @return список элементов коллекции в порядке очереди
-     */
     private ArrayList<HumanBeing> getSortedArrayListFromQueue () {
         PriorityQueue<HumanBeing> bufferQueue = new PriorityQueue<>(humanQueue);
         ArrayList<HumanBeing> sortedArrayList = new ArrayList<>();
@@ -60,6 +48,7 @@ public class HumanCollection {
      * @param human экзепмпляр HumanBeing
      */
     public void addHuman(HumanBeing human) {
+        //TODO вот здесь проводить валидацию очередного human которого мы добавляем?
         humanQueue.add(human);
     }
 
@@ -121,7 +110,7 @@ public class HumanCollection {
     public void show() {
         ArrayList<HumanBeing> arrayToShow = getSortedArrayListFromQueue();
         for (HumanBeing human : arrayToShow) {
-            System.out.println(human);
+            TextSender.printMessage(human.toString());
         }
     }
 
@@ -182,7 +171,7 @@ public class HumanCollection {
                 return;
             }
         }
-        humanQueue.add(newHuman);
+        addHuman(newHuman);
     }
 
     /**
@@ -203,7 +192,8 @@ public class HumanCollection {
     /**
      * @return информация обо всех элементах коллекции в строковом формате
      */
-    public ArrayList<String> getArrayOfInfo() {
+    //todo возвращаем просто List(поискать в нескольких местах такие же ошибки)
+    public List<String> getArrayOfInfo() {
         ArrayList<String> arrayOfInfo = new ArrayList<>();
         for (HumanBeing human : humanQueue) {
             String humanInfo = human.getName() + "," + human.getCoordinates().getX() + ","

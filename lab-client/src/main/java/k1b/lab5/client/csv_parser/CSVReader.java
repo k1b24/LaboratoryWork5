@@ -2,6 +2,9 @@ package k1b.lab5.client.csv_parser;
 
 import k1b.lab5.client.abstractions.AbstractFileReader;
 import k1b.lab5.client.entities.HumanBeing;
+import k1b.lab5.client.utils.HumanValidator;
+import k1b.lab5.client.utils.StringToTypeConverter;
+import k1b.lab5.client.utils.TextSender;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -17,29 +20,11 @@ import java.util.Scanner;
  */
 public class CSVReader extends AbstractFileReader {
 
-    /**
-     * Поле, хранящее в себе scanner файла
-     */
     private Scanner scannerOfFile;
-    /**
-     * Поле, хранящее в себе параметры csv файла (первую строку)
-     */
     private String[] parameters;
-    /**
-     * Поле, хранящее в себе информацию об элементах коллекции в виде строк
-     */
     private final ArrayList<String> peopleStrings = new ArrayList<>();
-    /**
-     * Поле, хранящее в себе хеш-таблицы, содержащие информацию о каждом элементе коллекции в виде <название параметра: значение>
-     */
     private final ArrayList<HashMap<String, String>> peopleInfo = new ArrayList<>();
-    /**
-     * Поле, хранящее в себе созданные элементы коллекции
-     */
     private final ArrayList<HumanBeing> humanArray = new ArrayList<>();
-    /**
-     * Поле, хранящее в себе все поля элемента коллекции, которые заполняет парсер
-     */
     private final Field[] humanBeingFields;
 
     /**
@@ -66,61 +51,13 @@ public class CSVReader extends AbstractFileReader {
         for (HashMap<String, String> humanInfo : peopleInfo) {
             HumanBeing newHuman = null;
             newHuman = createHuman(humanInfo);
-            humanArray.add(newHuman);
-        }
-    }
-
-    /**
-     * Метод, создающий один элемент коллекции, по хеш-таблице <имя поля : значение поля>
-     * @param humanInfo
-     * @return HumanBeing
-     */
-    private HumanBeing createHuman(HashMap<String, String> humanInfo) {
-        HumanBeing newHuman = new HumanBeing(true);
-        for (Map.Entry<String, String> element : humanInfo.entrySet()) {
-            for (Field field: humanBeingFields) {
-                Class<?> cl = field.getType();
-                if (field.getName().equals(element.getKey())) {
-                    try {
-                        Method setter = HumanBeing.class.getDeclaredMethod("set"
-                                + field.getName().substring(0, 1).toUpperCase()
-                                + field.getName().substring(1), String.class);
-                        setter.invoke(newHuman, element.getValue());
-                    } catch (Exception e) {
-                        System.out.println("Ошибка при чтении файла");
-                        System.exit(2);
-                    }
-                } else {
-                    Field[] innerFields = cl.getDeclaredFields();
-                    for (Field innerField : innerFields) {
-                        if (innerField.getName().equals(element.getKey())) {
-                            try {
-                                Method innerSetter = cl.getDeclaredMethod("set"
-                                        + innerField.getName().substring(0, 1).toUpperCase()
-                                        + innerField.getName().substring(1), String.class);
-                                Method getter = HumanBeing.class.getDeclaredMethod("get"
-                                        + cl.getSimpleName().substring(0, 1).toUpperCase()
-                                        + cl.getSimpleName().substring(1));
-                                Method outerSetter = HumanBeing.class.getDeclaredMethod("set"
-                                        + cl.getSimpleName().substring(0, 1).toUpperCase()
-                                        + cl.getSimpleName().substring(1), cl);
-                                if ("".equals(element.getValue())) {
-                                    outerSetter.invoke(newHuman, (Object) null);
-                                } else if (getter.invoke(newHuman) != null) {
-                                    innerSetter.invoke(getter.invoke(newHuman), element.getValue());
-                                }
-                            } catch (Exception e) {
-                                System.out.println("Ошибка при чтении файла");
-                                System.out.println(e.getCause().getMessage());
-                                System.exit(2);
-                            }
-                        }
-                    }
-                }
-
+            if (HumanValidator.validateHuman(newHuman)) {
+                humanArray.add(newHuman);
+            } else {
+                TextSender.printError("Ошибка при валидации данных, прочитанных из файла");
+                System.exit(2);
             }
         }
-        return newHuman;
     }
 
     /**
@@ -134,9 +71,52 @@ public class CSVReader extends AbstractFileReader {
         scannerOfFile = new Scanner(infoFile);
     }
 
-    /**
-     * Метод, читающий строки с информацией из файла, в нем задаются поля: parameters и peopleStrings
-     */
+    private HumanBeing createHuman(HashMap<String, String> humanInfo) {
+        HumanBeing newHuman = new HumanBeing(true);
+        for (Map.Entry<String, String> element : humanInfo.entrySet()) {
+            for (Field field: humanBeingFields) {
+                Class<?> cl = field.getType();
+                if (field.getName().equals(element.getKey())) {
+                    try {
+                        Method setter = HumanBeing.class.getDeclaredMethod("set"
+                                + field.getName().substring(0, 1).toUpperCase()
+                                + field.getName().substring(1), field.getType());
+                        setter.invoke(newHuman, ("null".equals(element.getValue()) ? null : StringToTypeConverter.toObject(field.getType(), element.getValue())));
+                    } catch (Exception e) {
+                        TextSender.printError("Ошибка при чтении файла");
+                        System.exit(2);
+                    }
+                } else {
+                    Field[] innerFields = cl.getDeclaredFields();
+                    for (Field innerField : innerFields) {
+                        if (innerField.getName().equals(element.getKey())) {
+                            try {
+                                Method innerSetter = cl.getDeclaredMethod("set"
+                                        + innerField.getName().substring(0, 1).toUpperCase()
+                                        + innerField.getName().substring(1), innerField.getType());
+                                Method getter = HumanBeing.class.getDeclaredMethod("get"
+                                        + cl.getSimpleName().substring(0, 1).toUpperCase()
+                                        + cl.getSimpleName().substring(1));
+                                Method outerSetter = HumanBeing.class.getDeclaredMethod("set"
+                                        + cl.getSimpleName().substring(0, 1).toUpperCase()
+                                        + cl.getSimpleName().substring(1), cl);
+                                if ("".equals(element.getValue())) {
+                                    outerSetter.invoke(newHuman, (Object) null);
+                                } else if (getter.invoke(newHuman) != null) {
+                                    innerSetter.invoke(getter.invoke(newHuman), ("null".equals(element.getValue()) ? null : StringToTypeConverter.toObject(innerField.getType(), element.getValue())));
+                                }
+                            } catch (Exception e) {
+                                TextSender.printError("Ошибка при чтении файла");
+                                System.exit(2);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return newHuman;
+    }
+
     private void readStringsFromFile() {
         ArrayList<String> stringsFromFile = new ArrayList<>();
         while (scannerOfFile.hasNextLine()) {
@@ -148,9 +128,6 @@ public class CSVReader extends AbstractFileReader {
         }
     }
 
-    /**
-     * Метод, собирающий хеш-таблицу из каждой строки прочтенного файла
-     */
     private void readPeople() {
         readStringsFromFile();
         for (String peopleString : peopleStrings) {

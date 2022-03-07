@@ -3,6 +3,9 @@ package k1b.lab5.client.user_command_line;
 import k1b.lab5.client.entities.HumanBeing;
 import k1b.lab5.client.entities.enums.Mood;
 import k1b.lab5.client.entities.enums.WeaponType;
+import k1b.lab5.client.utils.HumanValidator;
+import k1b.lab5.client.utils.StringToTypeConverter;
+import k1b.lab5.client.utils.TextSender;
 
 import java.util.Arrays;
 import java.util.Scanner;
@@ -12,29 +15,11 @@ import java.util.Scanner;
  */
 public class HumanInfoInput {
 
-    /**
-     * Поле человека, информацию о котором мы заполняем в интерактивном режиме
-     */
+    static private Scanner scanner = new Scanner(System.in);
     private final HumanBeing newHumanToInput;
-
-    /**
-     * Примитивное поле отвечающее за имя человека
-     */
     private final String name;
-
-    /**
-     * Примитивное поле отвечающее за героизм человека
-     */
     private final String realHero;
-
-    /**
-     * Примитивное поле отвечающее за наличие зубочистки у человека
-     */
     private final String hasToothpick;
-
-    /**
-     * Примитивное поле отвечающее за скорость удара человека
-     */
     private final String impactSpeed;
 
     /**
@@ -50,9 +35,7 @@ public class HumanInfoInput {
         this.hasToothpick = hasToothpick;
         this.impactSpeed = impactSpeed;
         newHumanToInput = new HumanBeing(false);
-        newHumanToInput.setId();
         setPrimitives();
-
     }
 
     /**
@@ -72,138 +55,143 @@ public class HumanInfoInput {
         setPrimitives();
     }
 
-    /**
-     * метод отвечающий за присвоение имени человеку
-     */
     private void inputName() {
         newHumanToInput.setName(name);
+        boolean validationResult = HumanValidator.validateField(newHumanToInput, "name");
+        if (!validationResult) {
+            throw new IllegalArgumentException("Ошибка ввода имени человека");
+        }
     }
 
-    /**
-     * метод отвечающий за присвоение координаты X человеку
-     */
-    private void inputX() {
-        Scanner scanner = new Scanner(System.in);
-        System.out.print("Введите X(целое число): ");
+    private void inputX() throws NumberFormatException {
+        TextSender.printMessage("Введите X(целое число): ");
+        String userInput = scanner.nextLine();
         try {
-            newHumanToInput.getCoordinates().setX(scanner.nextLine());
+            newHumanToInput.getCoordinates().setX((Long) StringToTypeConverter.toObject(Long.class, userInput));
+            boolean validationResult = HumanValidator.validateField(newHumanToInput.getCoordinates(), "x");
+            if (!validationResult) {
+                inputX();
+            }
         } catch (NumberFormatException e) {
-            System.out.println("Ошибка ввода числа X");
-            inputX();
-        } catch (IllegalArgumentException e) {
-            System.out.println(e.getMessage());
+            TextSender.printError("Ошибка ввода числа X");
             inputX();
         }
     }
 
-    /**
-     * метод отвечающий за присвоение координаты Y человеку
-     */
-    private void inputY() {
-        Scanner scanner = new Scanner(System.in);
-        System.out.print("Введите Y(число с плавающей точкой): ");
+    private void inputY() throws NumberFormatException {
+        TextSender.printMessage("Введите Y(число с плавающей точкой): ");
+        String userInput = scanner.nextLine();
         try {
-            newHumanToInput.getCoordinates().setY(scanner.nextLine());
+            Float y = (Float) StringToTypeConverter.toObject(Float.class, userInput);
+            if (y.equals(Float.NEGATIVE_INFINITY) || y.equals(Float.POSITIVE_INFINITY)) {
+                TextSender.printError("Введено слишком большое число для этого формата");
+                inputY();
+            }
+            newHumanToInput.getCoordinates().setY(y);
+            boolean validationResult = HumanValidator.validateField(newHumanToInput.getCoordinates(), "y");
+            if (!validationResult) {
+                inputY();
+            }
         } catch (NumberFormatException e) {
-            System.out.println("Ошибка ввода числа Y");
-            inputY();
-        } catch (IllegalArgumentException e) {
-            System.out.println(e.getMessage());
+            TextSender.printError("Ошибка ввода числа Y");
             inputY();
         }
     }
 
-    /**
-     * метод отвечающий за присвоение героизма человеку
-     */
     private void inputRealHero() {
-        newHumanToInput.setRealHero(realHero);
+        boolean realHeroValue;
+        if (this.realHero.equals("true")) {
+            newHumanToInput.setRealHero(true);
+        } else if (this.realHero.equals("false")) {
+            newHumanToInput.setRealHero(false);
+        } else {
+            throw new IllegalArgumentException("Ошибка ввода героизма человека");
+        }
     }
 
-    /**
-     * метод отвечающий за присвоение наличия зубочистки человеку
-     */
     private void inputHasToothpick() {
-        newHumanToInput.setHasToothpick(hasToothpick);
+        boolean hasToothpickValue;
+        if (this.hasToothpick.equals("true")) {
+            newHumanToInput.setHasToothpick(true);
+        } else if (this.hasToothpick.equals("false")) {
+            newHumanToInput.setHasToothpick(false);
+        } else {
+            throw new IllegalArgumentException("Ошибка ввода наличия у человека зубочистки");
+        }
     }
 
-    /**
-     * метод отвечающий за присвоение скорости удара человеку
-     */
-    private void inputImpactSpeed() {
-        newHumanToInput.setImpactSpeed(impactSpeed);
+    private void inputImpactSpeed() throws NumberFormatException {
+        if ("".equals(this.impactSpeed)) {
+            newHumanToInput.setImpactSpeed(null);
+        } else {
+            newHumanToInput.setImpactSpeed((Integer) StringToTypeConverter.toObject(Integer.class, this.impactSpeed));
+            boolean validationResult = HumanValidator.validateField(newHumanToInput, "impactSpeed");
+            if (!validationResult) {
+                throw new IllegalArgumentException("Ошибка ввода скорости удара человека");
+            }
+        }
     }
 
-    /**
-     * метод отвечающий за присвоение типа оружия человеку
-     */
     private void inputWeaponType() {
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Введите тип оружия из предложенных вариантов или оставьте пустую строку, если оружия нет: ");
-        System.out.println(Arrays.toString(WeaponType.values()));
-        try {
-            newHumanToInput.setWeaponType(scanner.nextLine());
-        } catch (IllegalArgumentException e) {
-            System.out.println("Ошибка ввода типа оружия");
-            inputWeaponType();
+        TextSender.printMessage("Введите тип оружия из предложенных вариантов или оставьте пустую строку, если оружия нет: ");
+        TextSender.printMessage(Arrays.toString(WeaponType.values()));
+        String userInput = scanner.nextLine();
+        if ("".equals(userInput)) {
+            newHumanToInput.setWeaponType(null);
+        } else {
+            try {
+                newHumanToInput.setWeaponType((WeaponType) StringToTypeConverter.toObject(WeaponType.class, userInput));
+            } catch (IllegalArgumentException e) {
+                TextSender.printError("Ошибка ввода типа оружия");
+                inputWeaponType();
+            }
         }
+
     }
 
-    /**
-     * метод отвечающий за присвоение настроения человеку
-     */
     private void inputMood() {
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Введите настроение из предложенных вариантов или оставьте пустую строку, если человек дед инсайд: ");
-        System.out.println(Arrays.toString(Mood.values()));
-        try {
-            newHumanToInput.setMood(scanner.nextLine());
-        } catch (IllegalArgumentException e) {
-            System.out.println("Ошибка ввода настроения");
-            inputMood();
+        TextSender.printMessage("Введите настроение из предложенных вариантов или оставьте пустую строку, если человек дед инсайд: ");
+        TextSender.printMessage(Arrays.toString(Mood.values()));
+        String userInput = scanner.nextLine();
+        if ("".equals(userInput)) {
+            newHumanToInput.setMood(null);
+        } else {
+            try {
+                newHumanToInput.setMood((Mood) StringToTypeConverter.toObject(Mood.class, userInput));
+            } catch (IllegalArgumentException e) {
+                TextSender.printError("Ошибка ввода типа настроения");
+                inputWeaponType();
+            }
         }
     }
 
-    /**
-     * метод отвечающий за присвоение скорости машины
-     */
     private void inputCarSpeed() {
-        Scanner scanner = new Scanner(System.in);
-        System.out.print("Введите скорость машины: ");
+        TextSender.printMessage("Введите скорость машины: ");
+        String userInput = scanner.nextLine();
         try {
-            newHumanToInput.getCar().setCarSpeed(scanner.nextLine());
+            newHumanToInput.getCar().setCarSpeed((Integer) StringToTypeConverter.toObject(Integer.class, userInput));
         } catch (NumberFormatException e) {
-            System.out.println("Ошибка ввода скорости машины");
+            TextSender.printError("Ошибка ввода скорости машины");
             inputCarSpeed();
         }
     }
 
-    /**
-     * метод отвечающий за присвоение крутости машины
-     */
     private void inputCarCoolness() {
-        Scanner scanner = new Scanner(System.in);
-        System.out.print("Машина крутая?[y/n]: ");
-        String inputString = scanner.nextLine().toLowerCase();
-        if ("y".equals(inputString)) {
-            inputString = "true";
-        } else if ("n".equals(inputString)) {
-            inputString = "false";
-        }
-        try {
-            newHumanToInput.getCar().setCarCoolness(inputString);
-        } catch (IllegalArgumentException e) {
-            System.out.println(e.getMessage());
+        TextSender.printMessage("Машина крутая?[y/n]: ");
+        String userInput = scanner.nextLine().toLowerCase();
+        if ("y".equals(userInput)) {
+            userInput = "true";
+        } else if ("n".equals(userInput)) {
+            userInput = "false";
+        } else {
+            TextSender.printError("Ошибка ввода крутости машины");
             inputCarCoolness();
         }
+        newHumanToInput.getCar().setCarCoolness((Boolean) StringToTypeConverter.toObject(Boolean.class, userInput));
     }
 
-    /**
-     * метод отвечающий за присвоение наличия у человека машины
-     */
     private void inputCar() {
-        System.out.println("Есть ли у человека машина?[y/n]");
-        Scanner scanner = new Scanner(System.in);
+        TextSender.printMessage("Есть ли у человека машина?[y/n]");
         String userAnswer = scanner.nextLine();
         if ("y".equals(userAnswer)) {
             inputCarCoolness();
@@ -211,7 +199,7 @@ public class HumanInfoInput {
         } else if ("n".equals(userAnswer)) {
             newHumanToInput.setCar(null);
         } else {
-            System.out.println("Ошибка ввода");
+            TextSender.printError("Ошибка ввода");
             inputCar();
         }
     }
@@ -242,6 +230,7 @@ public class HumanInfoInput {
      * @return введенный пользователем человек
      */
     public HumanBeing getNewHumanToInput() {
+        newHumanToInput.setId();
         return newHumanToInput;
     }
 }

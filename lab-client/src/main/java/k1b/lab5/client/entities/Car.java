@@ -5,14 +5,7 @@ package k1b.lab5.client.entities;
  */
 public class Car {
 
-    /**
-     * Поле отвечающее за крутость машины, может принимать значение null
-     */
     private Boolean carCoolness; //Поле может быть null
-
-    /**
-     * Поле, хранящее в себе скорость машины
-     */
     private int carSpeed;
 
     /**
@@ -26,8 +19,8 @@ public class Car {
      * Метод, позволяющий задать скорость машины
      * @param newSpeed новая скорость в строковом формате
      */
-    public void setCarSpeed(String newSpeed) {
-        this.carSpeed = Integer.parseInt(newSpeed);
+    public void setCarSpeed(int newSpeed) {
+        this.carSpeed = newSpeed;
     }
 
     /**
@@ -39,17 +32,10 @@ public class Car {
 
     /**
      * Метод, позволяющий задать крутость машины
-     * @param newCool
+     * @param newCoolness Новая крутость машины
      */
-    public void setCarCoolness(String newCool) {
-        if ("".equals(newCool) || "null".equals(newCool)) {
-            this.carCoolness = null;
-            return;
-        }
-        if (!"false".equalsIgnoreCase(newCool) && !"true".equalsIgnoreCase(newCool)) {
-            throw new IllegalArgumentException("Передано неправильное значение, машина крутая или нет?");
-        }
-        this.carCoolness = "true".equalsIgnoreCase(newCool);
+    public void setCarCoolness(Boolean newCoolness) {
+        this.carCoolness = newCoolness;
     }
 
     @Override

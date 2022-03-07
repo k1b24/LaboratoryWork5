@@ -1,4 +1,4 @@
-package k1b.lab5.client.user_command_line;
+package k1b.lab5.client.utils;
 
 import java.util.ArrayList;
 
