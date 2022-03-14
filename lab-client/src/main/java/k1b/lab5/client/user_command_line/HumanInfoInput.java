@@ -24,16 +24,12 @@ public class HumanInfoInput {
 
     /**
      * Конструктор создающий человека информацию о котором мы хотим получить автоматически
-     * @param name имя человека
-     * @param realHero героизм человека
-     * @param hasToothpick наличие зубочистки у человека
-     * @param impactSpeed скорость удара человека
      */
-    public HumanInfoInput(String name, String realHero, String hasToothpick, String impactSpeed) {
-        this.name = name;
-        this.realHero = realHero;
-        this.hasToothpick = hasToothpick;
-        this.impactSpeed = impactSpeed;
+    public HumanInfoInput(String[] args) {
+        this.name = args[0];
+        this.realHero = args[1];
+        this.hasToothpick = args[2];
+        this.impactSpeed = args[3];
         newHumanToInput = new HumanBeing(false);
         setPrimitives();
     }
@@ -41,16 +37,12 @@ public class HumanInfoInput {
     /**
      * Конструктор принимающий человека информацию о котором мы хотим изменить
      * @param newHumanToInput человек информацию о котором мы хотим изменить
-     * @param name имя человека
-     * @param realHero героизм человека
-     * @param hasToothpick наличие зубочистки у человека
-     * @param impactSpeed скорость удара человека
      */
-    public HumanInfoInput(HumanBeing newHumanToInput, String name, String realHero, String hasToothpick, String impactSpeed) {
-        this.name = name;
-        this.realHero = realHero;
-        this.hasToothpick = hasToothpick;
-        this.impactSpeed = impactSpeed;
+    public HumanInfoInput(HumanBeing newHumanToInput, String[] args) {
+        this.name = args[0];
+        this.realHero = args[1];
+        this.hasToothpick = args[2];
+        this.impactSpeed = args[3];
         this.newHumanToInput = newHumanToInput;
         setPrimitives();
     }
@@ -64,7 +56,7 @@ public class HumanInfoInput {
     }
 
     private void inputX() throws NumberFormatException {
-        TextSender.printMessage("Введите X(целое число): ");
+        TextSender.printText("Введите X(целое число): ");
         String userInput = scanner.nextLine();
         try {
             newHumanToInput.getCoordinates().setX((Long) StringToTypeConverter.toObject(Long.class, userInput));
@@ -79,7 +71,7 @@ public class HumanInfoInput {
     }
 
     private void inputY() throws NumberFormatException {
-        TextSender.printMessage("Введите Y(число с плавающей точкой): ");
+        TextSender.printText("Введите Y(число с плавающей точкой): ");
         String userInput = scanner.nextLine();
         try {
             Float y = (Float) StringToTypeConverter.toObject(Float.class, userInput);
@@ -133,8 +125,8 @@ public class HumanInfoInput {
     }
 
     private void inputWeaponType() {
-        TextSender.printMessage("Введите тип оружия из предложенных вариантов или оставьте пустую строку, если оружия нет: ");
-        TextSender.printMessage(Arrays.toString(WeaponType.values()));
+        TextSender.printText("Введите тип оружия из предложенных вариантов или оставьте пустую строку, если оружия нет: ");
+        TextSender.printText(Arrays.toString(WeaponType.values()));
         String userInput = scanner.nextLine();
         if ("".equals(userInput)) {
             newHumanToInput.setWeaponType(null);
@@ -150,8 +142,8 @@ public class HumanInfoInput {
     }
 
     private void inputMood() {
-        TextSender.printMessage("Введите настроение из предложенных вариантов или оставьте пустую строку, если человек дед инсайд: ");
-        TextSender.printMessage(Arrays.toString(Mood.values()));
+        TextSender.printText("Введите настроение из предложенных вариантов или оставьте пустую строку, если человек дед инсайд: ");
+        TextSender.printText(Arrays.toString(Mood.values()));
         String userInput = scanner.nextLine();
         if ("".equals(userInput)) {
             newHumanToInput.setMood(null);
@@ -166,7 +158,7 @@ public class HumanInfoInput {
     }
 
     private void inputCarSpeed() {
-        TextSender.printMessage("Введите скорость машины: ");
+        TextSender.printText("Введите скорость машины: ");
         String userInput = scanner.nextLine();
         try {
             newHumanToInput.getCar().setCarSpeed((Integer) StringToTypeConverter.toObject(Integer.class, userInput));
@@ -177,7 +169,7 @@ public class HumanInfoInput {
     }
 
     private void inputCarCoolness() {
-        TextSender.printMessage("Машина крутая?[y/n]: ");
+        TextSender.printText("Машина крутая?[y/n]: ");
         String userInput = scanner.nextLine().toLowerCase();
         if ("y".equals(userInput)) {
             userInput = "true";
@@ -191,7 +183,7 @@ public class HumanInfoInput {
     }
 
     private void inputCar() {
-        TextSender.printMessage("Есть ли у человека машина?[y/n]");
+        TextSender.printText("Есть ли у человека машина?[y/n]");
         String userAnswer = scanner.nextLine();
         if ("y".equals(userAnswer)) {
             inputCarCoolness();

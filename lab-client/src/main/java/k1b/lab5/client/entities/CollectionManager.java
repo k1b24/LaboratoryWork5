@@ -1,13 +1,13 @@
 package k1b.lab5.client.entities;
 
 import k1b.lab5.client.entities.enums.Mood;
-import k1b.lab5.client.utils.TextSender;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.PriorityQueue;
+import java.util.stream.Collectors;
 
 /**
  * Класс для работы с коллекцией экземпляров HumanBeing
@@ -16,14 +16,12 @@ public class CollectionManager {
 
     private final PriorityQueue<HumanBeing> humanQueue = new PriorityQueue<>();
     private final LocalDate initializationDate;
-    private final String fileName;
 
     /**
      * Конструктор, задаюший дату инициализации коллекции и поле fileName
      * @param fileName имя файла, в котором хранятся данные о коллекции
      */
     public CollectionManager(String fileName) {
-        this.fileName = fileName;
         initializationDate = LocalDate.now();
     }
 
@@ -37,18 +35,10 @@ public class CollectionManager {
     }
 
     /**
-     * @return имя файла с данными о коллекции
-     */
-    public String getFileName() {
-        return System.getenv(fileName);
-    }
-
-    /**
      * Метод, добавляющий экземпляр HumanBeing в коллекцию
      * @param human экзепмпляр HumanBeing
      */
     public void addHuman(HumanBeing human) {
-        //TODO вот здесь проводить валидацию очередного human которого мы добавляем?
         humanQueue.add(human);
     }
 
@@ -107,11 +97,11 @@ public class CollectionManager {
     /**
      * Метод выводящий информацию о коллекции
      */
-    public void show() {
-        ArrayList<HumanBeing> arrayToShow = getSortedArrayListFromQueue();
-        for (HumanBeing human : arrayToShow) {
-            TextSender.printMessage(human.toString());
-        }
+    public String getStringForShowing() {
+        ArrayList<HumanBeing> listToShow = getSortedArrayListFromQueue();
+        return listToShow.stream()
+                .map(HumanBeing::toString)
+                .collect(Collectors.joining("\n"));
     }
 
     /**
@@ -192,7 +182,6 @@ public class CollectionManager {
     /**
      * @return информация обо всех элементах коллекции в строковом формате
      */
-    //todo возвращаем просто List(поискать в нескольких местах такие же ошибки)
     public List<String> getArrayOfInfo() {
         ArrayList<String> arrayOfInfo = new ArrayList<>();
         for (HumanBeing human : humanQueue) {

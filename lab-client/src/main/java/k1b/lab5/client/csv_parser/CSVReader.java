@@ -49,8 +49,7 @@ public class CSVReader extends AbstractFileReader {
     public void parseFile() {
         readPeople();
         for (HashMap<String, String> humanInfo : peopleInfo) {
-            HumanBeing newHuman = null;
-            newHuman = createHuman(humanInfo);
+            HumanBeing newHuman = createHuman(humanInfo);
             if (HumanValidator.validateHuman(newHuman)) {
                 humanArray.add(newHuman);
             } else {

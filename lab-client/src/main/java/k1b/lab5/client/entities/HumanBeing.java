@@ -1,5 +1,6 @@
 package k1b.lab5.client.entities;
 
+import javax.validation.Valid;
 import javax.validation.constraints.*;
 
 import k1b.lab5.client.entities.enums.Mood;
@@ -18,6 +19,7 @@ public class HumanBeing implements Comparable<HumanBeing> {
     @NotNull
     @NotEmpty
     private String name;
+    @Valid
     @NotNull
     private Coordinates coordinates = new Coordinates();
     @NotNull

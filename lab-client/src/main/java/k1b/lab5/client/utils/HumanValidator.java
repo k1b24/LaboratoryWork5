@@ -7,7 +7,6 @@ import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
-import java.lang.reflect.Field;
 import java.util.Set;
 
 public class HumanValidator {
@@ -16,7 +15,6 @@ public class HumanValidator {
     static Validator validator = validatorFactory.getValidator();
 
     public static boolean validateHuman(HumanBeing human) {
-        //TODO не валидирует внутренние поля
         Set<ConstraintViolation<HumanBeing>> validateResult = validator.validate(human);
         if (validateResult.size() > 0) {
             for (ConstraintViolation<HumanBeing> violation : validateResult) {
