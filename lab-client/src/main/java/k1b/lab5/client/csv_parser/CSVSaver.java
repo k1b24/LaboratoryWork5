@@ -1,8 +1,11 @@
 package k1b.lab5.client.csv_parser;
 
+import k1b.lab5.client.utils.TextSender;
+
 import java.io.FileWriter;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 /**
@@ -10,13 +13,7 @@ import java.util.Scanner;
  */
 public class CSVSaver {
 
-    /**
-     * Поле, хранящее в себе имя файла, используемого для сохранения данных
-     */
     private final String fileName;
-    /**
-     * Поле, хранящее в себе первую строку файла, которая представляет из себя заголовки столбцов таблицы
-     */
     private String firstLineOfFile;
 
     /**
@@ -27,10 +24,6 @@ public class CSVSaver {
         this.fileName = fileName;
     }
 
-    /**
-     * Метод, инициализирующий файл
-     * @throws FileNotFoundException
-     */
     private void initializeFile() throws FileNotFoundException {
         File infoFile = new File(fileName);
         Scanner scannerOfFile = new Scanner(infoFile);
@@ -42,7 +35,7 @@ public class CSVSaver {
      * @param infoStrings
      * @throws IOException
      */
-    public void saveToFile(ArrayList<String> infoStrings) throws IOException {
+    public void saveToFile(List<String> infoStrings) throws IOException {
         initializeFile();
         try (FileWriter fw = new FileWriter(fileName);
              BufferedWriter bw = new BufferedWriter(fw)) {
@@ -51,9 +44,7 @@ public class CSVSaver {
                 bw.write(infoString + "\n");
             }
         } catch (IOException e) {
-            System.out.println("Ошибка при работе с файлом");
-            System.exit(2);
+            TextSender.printError("Ошибка при работе с файлом");
         }
     }
-
 }

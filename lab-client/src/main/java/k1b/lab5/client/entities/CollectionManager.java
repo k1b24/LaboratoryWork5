@@ -5,40 +5,26 @@ import k1b.lab5.client.entities.enums.Mood;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.PriorityQueue;
+import java.util.stream.Collectors;
 
 /**
  * Класс для работы с коллекцией экземпляров HumanBeing
  */
-public class HumanCollection {
+public class CollectionManager {
 
-    /**
-     * Коллекция экземпляров HumanBeing
-     */
     private final PriorityQueue<HumanBeing> humanQueue = new PriorityQueue<>();
-
-    /**
-     * Дата инициализации коллекции
-     */
     private final LocalDate initializationDate;
-
-    /**
-     * Имя файла в котором хранятся данные о коллекции
-     */
-    private final String fileName;
 
     /**
      * Конструктор, задаюший дату инициализации коллекции и поле fileName
      * @param fileName имя файла, в котором хранятся данные о коллекции
      */
-    public HumanCollection(String fileName) {
-        this.fileName = fileName;
+    public CollectionManager(String fileName) {
         initializationDate = LocalDate.now();
     }
 
-    /**
-     * @return список элементов коллекции в порядке очереди
-     */
     private ArrayList<HumanBeing> getSortedArrayListFromQueue () {
         PriorityQueue<HumanBeing> bufferQueue = new PriorityQueue<>(humanQueue);
         ArrayList<HumanBeing> sortedArrayList = new ArrayList<>();
@@ -46,13 +32,6 @@ public class HumanCollection {
             sortedArrayList.add(bufferQueue.poll());
         }
         return sortedArrayList;
-    }
-
-    /**
-     * @return имя файла с данными о коллекции
-     */
-    public String getFileName() {
-        return System.getenv(fileName);
     }
 
     /**
@@ -118,11 +97,11 @@ public class HumanCollection {
     /**
      * Метод выводящий информацию о коллекции
      */
-    public void show() {
-        ArrayList<HumanBeing> arrayToShow = getSortedArrayListFromQueue();
-        for (HumanBeing human : arrayToShow) {
-            System.out.println(human);
-        }
+    public String getStringForShowing() {
+        ArrayList<HumanBeing> listToShow = getSortedArrayListFromQueue();
+        return listToShow.stream()
+                .map(HumanBeing::toString)
+                .collect(Collectors.joining("\n"));
     }
 
     /**
@@ -182,7 +161,7 @@ public class HumanCollection {
                 return;
             }
         }
-        humanQueue.add(newHuman);
+        addHuman(newHuman);
     }
 
     /**
@@ -203,7 +182,7 @@ public class HumanCollection {
     /**
      * @return информация обо всех элементах коллекции в строковом формате
      */
-    public ArrayList<String> getArrayOfInfo() {
+    public List<String> getArrayOfInfo() {
         ArrayList<String> arrayOfInfo = new ArrayList<>();
         for (HumanBeing human : humanQueue) {
             String humanInfo = human.getName() + "," + human.getCoordinates().getX() + ","

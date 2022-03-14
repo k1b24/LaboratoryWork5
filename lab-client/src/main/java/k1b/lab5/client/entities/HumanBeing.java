@@ -1,5 +1,8 @@
 package k1b.lab5.client.entities;
 
+import javax.validation.Valid;
+import javax.validation.constraints.*;
+
 import k1b.lab5.client.entities.enums.Mood;
 import k1b.lab5.client.entities.enums.WeaponType;
 
@@ -10,76 +13,24 @@ import java.time.LocalDate;
  */
 public class HumanBeing implements Comparable<HumanBeing> {
 
-    /**
-     * final поле, отвечающее за максимальное значение скорости удара
-     */
-    private static final int MAX_SPEED = 712;
-
-    /**
-     * Поле, отвечающее за количество созданных ID, во время работы программы
-     */
     private static long idCounter = 1;
-
-    /**
-     * Поле, хранящее уникальное ID человека
-     * Это значение генерируется автоматически
-     */
     private long id;
-
-    /**
-     * Поле, хранящее имя человека
-     * Поле не может быть null
-     * Имя не может быть пустым
-     */
+    @Pattern(regexp = "^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$")
+    @NotNull
+    @NotEmpty
     private String name;
-
-    /**
-     * Поле, хранящее координаты человека
-     * Поле не может быть null
-     */
+    @Valid
+    @NotNull
     private Coordinates coordinates = new Coordinates();
-
-    /**
-     * Поле, хранящее дату создания человека
-     * Поле не может быть null
-     * Значение этого поля генерируется автоматически
-     */
+    @NotNull
     private LocalDate creationDate;
-
-    /**
-     * Поле, отвечающее за героизм человека
-     * Поле не может быть null
-     */
+    @NotNull
     private Boolean realHero;
-
-    /**
-     * Поле, отвечающее за наличие у человека зубочистки
-     */
     private boolean hasToothpick;
-
-    /**
-     * Поле, хранящее скорость удара человека
-     * Максимальное значение поля: 712
-     * Поле может быть null
-     */
+    @Max(712)
     private Integer impactSpeed;
-
-    /**
-     * Поле, хранящее тип оружия человека
-     * Поле может быть null
-     */
     private WeaponType weaponType;
-
-    /**
-     * Поле, хранящее настроение человека
-     * Поле может быть null
-     */
     private Mood mood;
-
-    /**
-     * Поле, хранящее объект "машина"
-     * Поле может быть null
-     */
     private Car car = new Car();
 
     /**
@@ -119,9 +70,6 @@ public class HumanBeing implements Comparable<HumanBeing> {
      * @param name значение имени
      */
     public void setName(String name) {
-        if (name == null || "".equals(name)) {
-            throw new IllegalArgumentException("Введено неправильное имя или передано null значение");
-        }
         this.name = name;
     }
 
@@ -137,9 +85,6 @@ public class HumanBeing implements Comparable<HumanBeing> {
      * @param coordinates значение координат
      */
     public void setCoordinates(Coordinates coordinates) {
-        if (coordinates == null) {
-            throw new IllegalArgumentException("Координаты не могут быть null");
-        }
         this.coordinates = coordinates;
     }
 
@@ -154,8 +99,8 @@ public class HumanBeing implements Comparable<HumanBeing> {
      * Метод, позволяющий задать дату создания координат человека
      * @param creationDate дата создания
      */
-    public void setCreationDate(String creationDate) {
-        this.creationDate = LocalDate.parse(creationDate);
+    public void setCreationDate(LocalDate creationDate) {
+        this.creationDate = creationDate;
     }
 
     /**
@@ -169,11 +114,8 @@ public class HumanBeing implements Comparable<HumanBeing> {
      * Метод, позволяющий задать героизм человека
      * @param realHero героизм человека в строковом формате
      */
-    public void setRealHero(String realHero) {
-        if (!"false".equalsIgnoreCase(realHero) && !"true".equalsIgnoreCase(realHero)) {
-            throw new IllegalArgumentException("Передано неправильное значение героизма человека");
-        }
-        this.realHero = "true".equalsIgnoreCase(realHero);
+    public void setRealHero(Boolean realHero) {
+        this.realHero = realHero;
     }
 
     /**
@@ -187,11 +129,8 @@ public class HumanBeing implements Comparable<HumanBeing> {
      * Метод, позволяющий задать наличие зубочистки у человека
      * @param hasToothpick нализчие зубочистки у человека в строковом формате
      */
-    public void setHasToothpick(String hasToothpick) {
-        if (!"false".equalsIgnoreCase(hasToothpick) && !"true".equalsIgnoreCase(hasToothpick)) {
-            throw new IllegalArgumentException("Передано неправильное значение наличия у человека зубочистки");
-        }
-        this.hasToothpick = "true".equalsIgnoreCase(hasToothpick);
+    public void setHasToothpick(boolean hasToothpick) {
+        this.hasToothpick = hasToothpick;
     }
 
     /**
@@ -205,16 +144,8 @@ public class HumanBeing implements Comparable<HumanBeing> {
      * Метод, позволяющий задать значение координат человека
      * @param impactSpeed скорость удара в строковом формате
      */
-    public void setImpactSpeed(String impactSpeed) {
-        if ("".equals(impactSpeed) || "null".equals(impactSpeed)) {
-            this.impactSpeed = null;
-        } else {
-            int newImpactSpeed = Integer.parseInt(impactSpeed);
-            if (newImpactSpeed > MAX_SPEED) {
-                throw new IllegalArgumentException("Значение скорости удара не может быть больше 712");
-            }
-            this.impactSpeed = newImpactSpeed;
-        }
+    public void setImpactSpeed(Integer impactSpeed) {
+        this.impactSpeed = impactSpeed;
     }
 
     /**
@@ -228,13 +159,8 @@ public class HumanBeing implements Comparable<HumanBeing> {
      * Метод, позволяющий задать тип оружия человека
      * @param weaponType тип оружия в строковом формате
      */
-    public void setWeaponType(String weaponType) {
-        String newWeaponType = weaponType.toUpperCase();
-        if ("".equals(newWeaponType) || "NULL".equals(newWeaponType)) {
-            this.weaponType = null;
-        } else {
-            this.weaponType = WeaponType.valueOf(newWeaponType);
-        }
+    public void setWeaponType(WeaponType weaponType) {
+        this.weaponType = weaponType;
     }
 
     /**
@@ -248,13 +174,8 @@ public class HumanBeing implements Comparable<HumanBeing> {
      * Метод, позволяющий задать настроение человека
      * @param mood настроение в строковом формате
      */
-    public void setMood(String mood) {
-        String newMood = mood.toUpperCase();
-        if ("".equals(newMood) || "NULL".equals(newMood)) {
-            this.mood = null;
-        } else {
-            this.mood = Mood.valueOf(newMood);
-        }
+    public void setMood(Mood mood) {
+        this.mood = mood;
     }
 
     /**
@@ -274,6 +195,9 @@ public class HumanBeing implements Comparable<HumanBeing> {
 
     @Override
     public int compareTo(HumanBeing o) {
+        if (o == null) {
+            return 1;
+        }
         int result = this.getName().compareTo(o.getName());
         if (result == 0) {
             result = this.getImpactSpeed().compareTo(o.getImpactSpeed());
