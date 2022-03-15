@@ -35,7 +35,7 @@ public class ExecuteScript extends AbstractCommand {
             try {
                 commandListener = new CommandListener(initializeFile(fileName));
             } catch (IOException e) {
-                return e.getMessage();
+                return new ErrorMessage(e.getMessage());
             }
             commandListener.readCommands();
             return new SuccessMessage("Скрипт завершил свою работу");
